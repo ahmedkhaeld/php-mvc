@@ -15,16 +15,36 @@ class Router
     private array $routes;
 
     /**
-     * @param callable|array $action
-     * @param string $route
+     * @param callable|array $action the action of the route
+     * @param string $route the route of the request
+     * @param string $method the method of the request could be GET or POST
      * @return self $this the current instance of the router
      * register a route and its action to the router
      */
-    public function register(string $route, callable|array $action): self
+    public function register(string $method,string $route, callable|array $action): self
     {
-        $this->routes[$route] = $action;
+        $this->routes[$method][$route] = $action;
 
         return $this;
+    }
+
+    public function get(string $route, callable|array $action): self
+    {
+        return $this->register('get',$route, $action);
+    }
+
+    public function post(string $route, callable|array $action): self
+    {
+        return $this->register('post',$route, $action);
+    }
+
+    /**
+     * @return array the routes and their actions
+     * get the routes and their actions
+     */
+    public function routes(): array
+    {
+        return $this->routes;
     }
 
 
@@ -34,10 +54,10 @@ class Router
      * @param string $requestUri
      * resolve the route and return the result of the action
      */
-    public function resolve(string $requestUri): mixed
+    public function resolve(string $requestUri,string $method): mixed
     {
         $route = explode('?', $requestUri)[0];
-        $action = $this->routes[$route] ?? null; // ?? null is the same as isset($this->routes[$route]) ? $this->routes[$route] : null;
+        $action = $this->routes[$method][$route] ?? null;
 
         if (!$action) {
             throw new  RouteNotFoundException();

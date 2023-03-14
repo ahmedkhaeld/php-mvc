@@ -11,10 +11,11 @@ require __DIR__ . '/../vendor/autoload.php';
 $router = new App\Router();
 
 
-$router->register('/', [HomeController::class, 'index'])
-        ->register('/invoices', [InvoiceController::class, 'index'])
-        ->register('/invoices/create', [InvoiceController::class, 'create'])
+$router->get('/', [HomeController::class, 'index'])
+        ->get('/invoices', [InvoiceController::class, 'index'])
+        ->get('/invoices/create', [InvoiceController::class, 'create'])
+        ->post('/invoices/create', [InvoiceController::class, 'store'])
 ;
 
 
-echo $router->resolve($_SERVER['REQUEST_URI']);
+echo $router->resolve($_SERVER['REQUEST_URI'],strtolower( $_SERVER['REQUEST_METHOD']));
