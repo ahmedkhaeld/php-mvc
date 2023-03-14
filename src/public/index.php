@@ -1,9 +1,19 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$id =new Ramsey\Uuid\UuidFactory();
 
-echo $id->uuid4()->toString();
+$router = new App\Router();
+
+
+$router->register('/', function () {
+    echo 'Home';
+});
+
+$router->register('/invoices', function () {
+    echo 'Invoices';
+});
+
+echo $router->resolve($_SERVER['REQUEST_URI']);
