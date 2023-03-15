@@ -2,19 +2,18 @@
 
 namespace App\Controllers;
 
+use App\View;
+
 class InvoiceController
 {
-    public function index(): string
+    public function index(): View
     {
-        return 'Invoices';
+        return View::make('invoices/index', ['invoices'=>'invoice1' ]);
     }
 
-    public function create(): string
+    public function create(): View
     {
-        return '<form action="/invoices/create" method="post">
-                   <label>Amount</label>
-                    <input type="text" name="amount">
-                </form>';
+        return View::make('invoices/create');
     }
 
     public function store(): void
