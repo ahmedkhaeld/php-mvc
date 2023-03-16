@@ -5,12 +5,33 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\View;
+use PDO;
 
 class HomeController
 {
 
     public function index(): View
     {
+        try {
+            $db=new PDO ('mysql:host=db;dbname=mvc','root','root');
+
+            $email='ahmed@gmail.com';
+            $query='SELECT * FROM users WHERE email=?';
+            $statement=$db->prepare($query);
+            $statement->execute([$email]);
+
+            foreach ($statement->fetchAll() as $user){
+                echo '<pre>';
+                echo $user['email'];
+                echo '<pre>';
+
+            }
+
+        }catch (\PDOException $e){
+            throw new \PDOException($e->getMessage(),(int)$e->getCode());
+        }
+
+
         return View::make('index');
     }
 
