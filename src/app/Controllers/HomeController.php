@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\App;
+use App\Models\Invoice;
+use App\Models\User;
+use App\Models\UserInvoice;
 use App\View;
 
 class HomeController
@@ -12,42 +15,25 @@ class HomeController
 
     public function index(): View
     {
-       $db=App::db();
 
-
-       $email='gamal@gmail.com';
-        $fullName='gamal';
+       $email='gemi@gmail.com';
+        $fullName='gemi';
         $amount=200;
 
-        try {
-            //begin transaction
-            $db->beginTransaction();
-            $newUser=$db->prepare(
-                'INSERT INTO users (email,full_name,is_active, created_at)
-                    VALUES (?, ?, 1, NOW())'
-            );
+        $userModel=new User();
+        $invoiceModel=new Invoice();
 
-            $newInvoice=$db->prepare(
-                'INSERT INTO invoices (amount, user_id)
-                    VALUES (?, ?)'
-            );
+        $invoiceID=(new UserInvoice($userModel,$invoiceModel))->register(
+            [
+                'email'=>$email,
+                'full_name'=>$fullName,
+            ],
+            [
+                'amount'=>$amount,
+            ]
+        );
 
-            $newUser->execute([$email,$fullName]);
-            $userId=(int)$db->lastInsertId();
-
-            $newInvoice->execute([$amount,$userId]);
-            //commit transaction
-            $db->commit();
-        }catch (\PDOException $e){
-            //rollback transaction after make sure the transaction is started
-            if ($db->inTransaction()) {
-                $db->rollBack();
-            }
-            throw new \PDOException($e->getMessage(),(int)$e->getCode());
-        }
-
-
-        return View::make('index');
+        return View::make('index' , ['invoice'=>$invoiceModel->find($invoiceID)]);
     }
 
     public function upload():void
