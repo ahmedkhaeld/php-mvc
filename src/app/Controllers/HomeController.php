@@ -4,35 +4,31 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\App;
 use App\View;
-use PDO;
 
 class HomeController
 {
 
     public function index(): View
     {
-        try {
+       $db=App::db();
 
-            $db =new PDO( $_ENV['DB_DRIVER'].':host='. $_ENV['DB_HOST'] .';dbname='. $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
-        }catch (\PDOException $e){
-            throw new \PDOException($e->getMessage(),(int)$e->getCode());
-        }
 
-       $email='gmal@gmail.com';
-        $fullName='gmal';
+       $email='gamal@gmail.com';
+        $fullName='gamal';
         $amount=200;
 
         try {
             //begin transaction
             $db->beginTransaction();
             $newUser=$db->prepare(
-                'INSERT INTO users (email,full_name,is_active, created_at) 
+                'INSERT INTO users (email,full_name,is_active, created_at)
                     VALUES (?, ?, 1, NOW())'
             );
 
             $newInvoice=$db->prepare(
-                'INSERT INTO invoices (amount, user_id) 
+                'INSERT INTO invoices (amount, user_id)
                     VALUES (?, ?)'
             );
 
