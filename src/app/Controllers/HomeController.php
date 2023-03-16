@@ -13,21 +13,40 @@ class HomeController
     public function index(): View
     {
         try {
-            $db=new PDO ('mysql:host=db;dbname=mvc','root','root');
 
-            $email='ahmed@gmail.com';
-            $query='SELECT * FROM users WHERE email=?';
-            $statement=$db->prepare($query);
-            $statement->execute([$email]);
-
-            foreach ($statement->fetchAll() as $user){
-                echo '<pre>';
-                echo $user['email'];
-                echo '<pre>';
-
-            }
-
+            $db =new PDO( $_ENV['DB_DRIVER'].':host='. $_ENV['DB_HOST'] .';dbname='. $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
         }catch (\PDOException $e){
+            throw new \PDOException($e->getMessage(),(int)$e->getCode());
+        }
+
+       $email='gmal@gmail.com';
+        $fullName='gmal';
+        $amount=200;
+
+        try {
+            //begin transaction
+            $db->beginTransaction();
+            $newUser=$db->prepare(
+                'INSERT INTO users (email,full_name,is_active, created_at) 
+                    VALUES (?, ?, 1, NOW())'
+            );
+
+            $newInvoice=$db->prepare(
+                'INSERT INTO invoices (amount, user_id) 
+                    VALUES (?, ?)'
+            );
+
+            $newUser->execute([$email,$fullName]);
+            $userId=(int)$db->lastInsertId();
+
+            $newInvoice->execute([$amount,$userId]);
+            //commit transaction
+            $db->commit();
+        }catch (\PDOException $e){
+            //rollback transaction after make sure the transaction is started
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             throw new \PDOException($e->getMessage(),(int)$e->getCode());
         }
 
