@@ -2,21 +2,25 @@
 
 declare(strict_types=1);
 
+use App\App;
+use App\Config;
 use App\Controllers\HomeController;
 use App\Controllers\InvoiceController;
-use App\View;
+use App\Router;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
 
 session_start();
 
 const STORAGE_PATH = __DIR__ . '/../storage/';
 const VIEWS_PATH = __DIR__ . '/../views/';
 
-try {
 
-    $router = new App\Router();
-
+    $router = new Router();
 
     $router->get('/', [HomeController::class, 'index'])
         ->post('/upload', [HomeController::class, 'upload'])
@@ -26,11 +30,8 @@ try {
         ->post('/invoices/create', [InvoiceController::class, 'store'])
     ;
 
-
-    echo $router->resolve($_SERVER['REQUEST_URI'],strtolower( $_SERVER['REQUEST_METHOD']));
-}catch (App\Exceptions\RouteNotFoundException $e){
-    //send 404 header
-    http_response_code(404);
-    //render 404 page
-    echo View::make('error/404');
-}
+(new App(
+    $router,
+    ['uri'=>$_SERVER['REQUEST_URI'],'method'=>$_SERVER['REQUEST_METHOD']],
+    new Config($_ENV)
+))->run();

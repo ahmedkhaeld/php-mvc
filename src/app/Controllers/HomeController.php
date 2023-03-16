@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\App;
 use App\View;
 
 class HomeController
@@ -11,6 +12,41 @@ class HomeController
 
     public function index(): View
     {
+       $db=App::db();
+
+
+       $email='gamal@gmail.com';
+        $fullName='gamal';
+        $amount=200;
+
+        try {
+            //begin transaction
+            $db->beginTransaction();
+            $newUser=$db->prepare(
+                'INSERT INTO users (email,full_name,is_active, created_at)
+                    VALUES (?, ?, 1, NOW())'
+            );
+
+            $newInvoice=$db->prepare(
+                'INSERT INTO invoices (amount, user_id)
+                    VALUES (?, ?)'
+            );
+
+            $newUser->execute([$email,$fullName]);
+            $userId=(int)$db->lastInsertId();
+
+            $newInvoice->execute([$amount,$userId]);
+            //commit transaction
+            $db->commit();
+        }catch (\PDOException $e){
+            //rollback transaction after make sure the transaction is started
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            throw new \PDOException($e->getMessage(),(int)$e->getCode());
+        }
+
+
         return View::make('index');
     }
 
