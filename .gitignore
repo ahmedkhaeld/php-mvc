@@ -2,3 +2,4 @@
 docker/storage
 vendor
 /src/.env
+/src/.phpunit.result.cache

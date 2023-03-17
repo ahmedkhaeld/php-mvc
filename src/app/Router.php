@@ -12,7 +12,7 @@ class Router
      * @param array $routes
      * the routes and their actions
      */
-    private array $routes;
+    private array $routes=[];
 
     /**
      * @param callable|array $action the action of the route
@@ -67,8 +67,7 @@ class Router
             return call_user_func($action);
         }
 
-        //check if the action is an array
-        if (is_array($action)) {
+
             //destructuring the array
             [$controller, $method] = $action;
             //check if controller exists
@@ -79,7 +78,7 @@ class Router
                     return call_user_func([$controller, $method]);
                 }
             }
-        }
+
         throw new RouteNotFoundException();
 
 
