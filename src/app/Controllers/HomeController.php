@@ -8,6 +8,7 @@ use App\App;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Models\UserInvoice;
+use App\Services\InvoiceService;
 use App\View;
 
 class HomeController
@@ -16,24 +17,9 @@ class HomeController
     public function index(): View
     {
 
-       $email='gemi@gmail.com';
-        $fullName='gemi';
-        $amount=200;
+        App::$container->get(InvoiceService::class)->process([],25);
 
-        $userModel=new User();
-        $invoiceModel=new Invoice();
-
-        $invoiceID=(new UserInvoice($userModel,$invoiceModel))->register(
-            [
-                'email'=>$email,
-                'full_name'=>$fullName,
-            ],
-            [
-                'amount'=>$amount,
-            ]
-        );
-
-        return View::make('index' , ['invoice'=>$invoiceModel->find($invoiceID)]);
+        return View::make('index');
     }
 
     public function upload():void
