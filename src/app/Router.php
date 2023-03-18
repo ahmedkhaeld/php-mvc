@@ -14,6 +14,10 @@ class Router
      */
     private array $routes=[];
 
+    public function __construct( private Container $container)
+    {
+    }
+
     /**
      * @param callable|array $action the action of the route
      * @param string $route the route of the request
@@ -72,7 +76,7 @@ class Router
             [$controller, $method] = $action;
             //check if controller exists
             if (class_exists($controller)){
-                $controller = new $controller();
+                $controller = $this->container->get($controller);
                 //check if method exists
                 if (method_exists($controller, $method)) {
                     return call_user_func([$controller, $method]);
