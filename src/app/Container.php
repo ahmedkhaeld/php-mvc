@@ -19,7 +19,11 @@ class Container implements ContainerInterface
     {
         if ($this->has($id)) {
             $entry= $this->entries[$id];
-            return $entry($this);
+
+            if (is_callable($entry)){
+                return $entry($this);
+            }
+            $id=$entry; //if the entry is a string, we will use it as the id
         }
 
         return $this->resolve($id);
@@ -33,11 +37,11 @@ class Container implements ContainerInterface
 
     /**
      * @param string $id the fully qualified class name
-     * @param callable $entry the resolver of the class,
+     * @param callable|string $entry the resolver of the class, a fully qualified class name or a callable
      * it should return an instance of the class with its dependencies resolved from the container
      * @return void set the entry in the container with the given id and callable entry
      */
-    public function set(string $id,callable $entry): void
+    public function set(string $id,callable|string $entry): void
     {
         $this->entries[$id] = $entry;
     }

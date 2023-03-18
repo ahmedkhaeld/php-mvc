@@ -32,6 +32,7 @@ const VIEWS_PATH = __DIR__ . '/../views/';
     ;
 
 (new App(
+    $container,
     $router,
     ['uri'=>$_SERVER['REQUEST_URI'],'method'=>$_SERVER['REQUEST_METHOD']],
     new Config($_ENV)

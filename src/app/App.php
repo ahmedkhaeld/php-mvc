@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App;
 
 use App\Exceptions\RouteNotFoundException;
+use App\Services\PaymentGatewayService;
+use App\Services\PaymentGatewayServiceInterface;
 
 
 class App
@@ -16,9 +18,11 @@ class App
      * @param array $request
      * @param Config $config
      */
-    public function __construct(protected Router $router, protected array $request, protected Config $config)
+    public function __construct(protected Container $container,protected Router $router, protected array $request, protected Config $config)
     {
        static::$db=new DB($config->db ?? []);
+
+       $this->container->set(PaymentGatewayServiceInterface::class,fn(Container $c)=>$c->get(PaymentGatewayService::class));
 
     }
 
