@@ -2,15 +2,23 @@
 
 namespace App\Controllers;
 
+use App\Attributes\Get;
 use App\Attributes\Route;
+use App\Enums\InvoiceStatus;
+use App\Models\Invoice;
 use App\View;
 
 class InvoiceController
 {
-    #[Route('/invoices')]
+    #[Get('/invoices')]
     public function index(): View
     {
-        return View::make('invoices/index', ['invoices'=>'invoice1' ]);
+        //here we are filtering the invoices by status, all accepts int as parameter
+        //means we could pass any int value and nothing wrong with the logic, but we want to pass only the status
+        //so, we do the validation by ourselves
+        $invoices=(new Invoice())->all(InvoiceStatus::PAID);
+
+        return View::make('invoices/index', ['invoices'=>$invoices]);
     }
 
     #[Route('/invoices/create')]

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
+use PDO;
+
 class Invoice extends Model
 {
 
@@ -32,6 +35,27 @@ class Invoice extends Model
         $invoice= $stmt->fetch();
 
         return $invoice ?: [];
+    }
+
+    public function all(int $status):array
+    {
+        //here we do the validation to only accept the status from the InvoiceStatus class
+        if(!in_array($status, InvoiceStatus::all())){
+            throw new \Exception('Invalid status');
+        }
+
+        $stmt=$this->db->prepare(
+            'SELECT id, amount, full_name
+                  FROM invoices 
+                WHERE status=?
+                 '
+        );
+
+        $stmt->execute([$status]);
+
+        $invoices= $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $invoices ?: [];
     }
 
 }

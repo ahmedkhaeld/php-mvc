@@ -1,19 +1,21 @@
-# PHP Attributes
-Attributes are essentially annotations that provide additional information about the code to tools, frameworks, and libraries.
+# PHP Enums
 
-Attributes in PHP are defined using the `#[Attribute]` syntax. To create a custom attribute,
-you can create a new class and add the `#[Attribute]` declaration to it.
+#### Before Enums
+we would use constant values or class constants to represent a limited set of options or values
 ```php
-#[Attribute]
-class ReadOnly {
+class Weekday {
+    const SUNDAY = 0;
+    const MONDAY = 1;
+    const TUESDAY = 2;
+    const WEDNESDAY = 3;
+    const THURSDAY = 4;
+    const FRIDAY = 5;
+    const SATURDAY = 6;
 }
 
 ```
-To use this attribute on a property, you can simply add the attribute to the property definition, like this:
-```php
-class User {
-    #[ReadOnly]
-    public string $readOnlyProperty;
-}
-```
-Now, any code that needs to access the $readOnlyProperty property can check for the presence of the ReadOnly attribute and act accordingly.
+This approach has several drawbacks:
+1. It doesn't provide any type safety. You can assign any integer value to a variable of type Weekday.
+2. It doesn't provide any auto-completion. You have to remember the names of the constants.
+3. Constants are global. If you have two classes with constants named the same, you can't use both in the same scope.
+4. Constants are not iterable or countable, so you can't use them in a foreach loop or with the count() function.
