@@ -24,14 +24,14 @@ const VIEWS_PATH = __DIR__ . '/../views/';
     $container = new Container();
     $router = new Router($container);
 
-    $router->get('/', [HomeController::class, 'index'])
-        ->post('/upload', [HomeController::class, 'upload'])
-        ->get('/download', [HomeController::class, 'download'])
-        ->get('/invoices', [InvoiceController::class, 'index'])
-        ->get('/invoices/create', [InvoiceController::class, 'create'])
-        ->post('/invoices/create', [InvoiceController::class, 'store'])
-        ->get('/examples/generator',[GeneratorExampleController::class, 'index'])
-    ;
+    //register routes using attributes by passing the controllers to the registerRoutesFromAttributes method
+    $router->registerRoutesFromAttributes([
+        HomeController::class,
+        InvoiceController::class,
+        GeneratorExampleController::class
+    ]);
+
+
 
 (new App(
     $container,
