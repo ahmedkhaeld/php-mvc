@@ -37,12 +37,9 @@ class Invoice extends Model
         return $invoice ?: [];
     }
 
-    public function all(int $status):array
+    public function all(InvoiceStatus $status):array
     {
-        //here we do the validation to only accept the status from the InvoiceStatus class
-        if(!in_array($status, InvoiceStatus::all())){
-            throw new \Exception('Invalid status');
-        }
+        //now we are passing the status as enum, so we can't pass any int value
 
         $stmt=$this->db->prepare(
             'SELECT id, amount, full_name
@@ -51,7 +48,7 @@ class Invoice extends Model
                  '
         );
 
-        $stmt->execute([$status]);
+        $stmt->execute([$status->value]);
 
         $invoices= $stmt->fetchAll(PDO::FETCH_OBJ);
 
