@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Attributes\Get;
+use App\Attributes\Post;
+use App\Models\Email;
+use App\View;
+
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+
+class UserController
+{
+
+    #[Get('/users/create')]
+    public function create(): View
+    {
+        return View::make('users/register');
+    }
+
+    #[Post('/users')]
+    public function register(): void
+    {
+        $name      = $_POST['name'];
+        $email     = $_POST['email'];
+        $firstName = explode(' ', $name)[0];
+
+        $text = <<<Body
+Hello $firstName,
+Thank you for signing up!
+Body;
+
+        $html = <<<HTMLBody
+<h1 style="text-align: center; color: blue;">Welcome</h1>
+Hello $firstName,
+<br /><br />
+Thank you for signing up!
+HTMLBody;
+
+        // queue the email instead of sending it
+        (new Email())->queue(
+            new Address($email),
+            new Address('support@example.com', 'Support'),
+            'Welcome!',
+            $html,
+            $text
+        );
+    }
+
+
+
+
+}
