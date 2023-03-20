@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\InvoiceStatus;
+use PDO;
+
 class Invoice extends Model
 {
 
@@ -32,6 +35,24 @@ class Invoice extends Model
         $invoice= $stmt->fetch();
 
         return $invoice ?: [];
+    }
+
+    public function all(InvoiceStatus $status):array
+    {
+        //now we are passing the status as enum, so we can't pass any int value
+
+        $stmt=$this->db->prepare(
+            'SELECT id, amount, full_name
+                  FROM invoices 
+                WHERE status=?
+                 '
+        );
+
+        $stmt->execute([$status->value]);
+
+        $invoices= $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        return $invoices ?: [];
     }
 
 }

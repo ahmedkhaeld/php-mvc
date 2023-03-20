@@ -36,7 +36,7 @@ class Router
                 $attributes = $method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF);
                 foreach ($attributes as $attribute) {
                     $route = $attribute->newInstance();
-                    $this->register($route->method, $route->path, [$controller, $method->getName()]);
+                    $this->register($route->method->value, $route->path, [$controller, $method->getName()]);
                 }
             }
         }
