@@ -49,7 +49,12 @@ class Container implements ContainerInterface
     public function resolve(string $id)
     {
         //1. Inspect the class that we are trying to get from the container
-        $reflector = new \ReflectionClass($id);
+        try{
+            $reflector = new \ReflectionClass($id);
+
+        }catch (\ReflectionException $e){
+            throw new NotFoundException($e->getMessage(),$e->getCode(),$e);
+        }
             //1.1. If the class is not instantiable [interface, abstract class, trait]
             if (!$reflector->isInstantiable()) {
                 throw new ContainerException('The class"' .$id.'" is not instantiable');
@@ -58,14 +63,14 @@ class Container implements ContainerInterface
         //2. Inspect the constructor of the class
         $constructor = $reflector->getConstructor();
             //2.1. If the class does not have a constructor (no dependencies)
-            if (is_null($constructor)) { //if(!$constructor)
+            if (!$constructor) {
                 return new $id;
             }
 
         //3. Inspect the constructor parameters of the class (dependencies)
         $parameters = $constructor->getParameters();
             //3.1. If the class does not have any parameters (no dependencies)
-            if (empty($parameters)) {  //if(!$parameters)
+            if (!$parameters) {
                 return new $id;
             }
 

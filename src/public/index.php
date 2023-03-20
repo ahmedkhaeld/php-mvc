@@ -8,6 +8,7 @@ use App\Config;
 use App\Controllers\GeneratorExampleController;
 use App\Controllers\HomeController;
 use App\Controllers\InvoiceController;
+use App\Controllers\UserController;
 use App\Router;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -28,7 +29,8 @@ const VIEWS_PATH = __DIR__ . '/../views/';
     $router->registerRoutesFromAttributes([
         HomeController::class,
         InvoiceController::class,
-        GeneratorExampleController::class
+        GeneratorExampleController::class,
+        UserController::class
     ]);
 
 

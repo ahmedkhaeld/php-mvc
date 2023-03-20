@@ -31,7 +31,7 @@ class Router
     {
         foreach ($controllers as $controller) {
             $reflection = new \ReflectionClass($controller);
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+            $methods = $reflection->getMethods();
             foreach ($methods as $method) {
                 $attributes = $method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF);
                 foreach ($attributes as $attribute) {

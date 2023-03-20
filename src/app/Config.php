@@ -6,6 +6,7 @@ use PDO;
 
 /**
  * @property-read ?array db
+ * @property-read ?array mailer
  */
 class Config
 {
@@ -19,6 +20,9 @@ class Config
                 'database'=>$env['DB_NAME'],
                 'user'=>$env['DB_USER'],
                 'password'=>$env['DB_PASSWORD'],
+            ],
+            'mailer'=>[
+                'dsn'=>$env['MAILER_DSN']??'',
             ]
         ];
 

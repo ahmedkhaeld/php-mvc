@@ -7,6 +7,7 @@ namespace App;
 use App\Exceptions\RouteNotFoundException;
 use App\Services\PaymentGatewayService;
 use App\Services\PaymentGatewayServiceInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 
 class App
@@ -22,7 +23,8 @@ class App
     {
        static::$db=new DB($config->db ?? []);
 
-       $this->container->set(PaymentGatewayServiceInterface::class,fn(Container $c)=>$c->get(PaymentGatewayService::class));
+       $this->container->set(PaymentGatewayServiceInterface::class,PaymentGatewayService::class);
+       $this->container->set(MailerInterface::class,fn()=>new CustomMailer($config->mailer['dsn']));
 
     }
 
