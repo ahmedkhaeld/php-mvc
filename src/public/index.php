@@ -13,9 +13,6 @@ use App\Router;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
-
 
 session_start();
 
@@ -38,6 +35,5 @@ const VIEWS_PATH = __DIR__ . '/../views/';
 (new App(
     $container,
     $router,
-    ['uri'=>$_SERVER['REQUEST_URI'],'method'=>$_SERVER['REQUEST_METHOD']],
-    new Config($_ENV)
-))->run();
+    ['uri' => $_SERVER['REQUEST_URI'], 'method' => $_SERVER['REQUEST_METHOD']]
+))->boot()->run();

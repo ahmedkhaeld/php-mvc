@@ -3,7 +3,8 @@
     "ramsey/uuid": "^4.7",
     "vlucas/phpdotenv": "^5.5",
     "psr/container": "^2.0",
-    "symfony/mailer": "^6.2"
+    "symfony/mailer": "^6.2",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
