@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[Entity]
 #[Table('invoices')]
+#[HasLifecycleCallbacks]
 class Invoice
 {
     #[Id]
@@ -89,12 +90,11 @@ class Invoice
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): Invoice
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
+   #[PrePersist]
+   public function onPersist(LifecycleEventArgs $args)
+   {
+        $this->createdAt=new \DateTime();
+   }
 
     /**
      * @return Collection<InvoiceItem>
